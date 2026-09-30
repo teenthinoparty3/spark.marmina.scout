@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spark — حفلة الكشافة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0b0d;
+    --bg-2: #16141a;
+    --ember: #ff6a1a;
+    --ember-soft: #ffb74d;
+    --text: #f2ede6;
+    --muted: #9a939c;
+    --line: rgba(242,237,230,0.12);
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-behavior: smooth; scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body { margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
+  body { font-family: 'Tajawal', sans-serif; font-weight: 400; line-height: 1.7; }
+  h1, h2, h3, .display { font-family: 'Almarai', sans-serif; font-weight: 800; }
+
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--ember-soft); outline-offset: 3px; }
+  section { position: relative; padding: 5rem 6vw; max-width: 1080px; margin: 0 auto; }
+  @media (max-width: 640px) { section { padding: 3.5rem 6vw; } }
+
+  /* Hero */
+  #hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-top: calc(2rem + env(safe-area-inset-top, 0px)); }
+  #spark-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; }
+  .eyebrow { color: var(--ember-soft); font-size: 0.95rem; letter-spacing: 0.02em; margin-bottom: 1rem; }
+  .brand { font-size: clamp(4rem, 16vw, 9rem); line-height: 0.9; margin: 0; background: linear-gradient(100deg, var(--ember-soft), var(--ember) 60%, #ff3d00); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .tagline { font-size: clamp(1.1rem, 2.4vw, 1.4rem); color: var(--text); max-width: 34ch; margin-top: 1.2rem; }
+  .hero-meta { margin-top: 2.8rem; display: flex; gap: 2.5rem; flex-wrap: wrap; font-size: 1rem; color: var(--muted); }
+  .hero-meta strong { display: block; color: var(--text); font-family: 'Almarai', sans-serif; font-weight: 700; font-size: 1.15rem; }
+
+  /* Countdown */
+  #countdown { display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+  .cbox { background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem 1.1rem; min-width: 78px; text-align: center; }
+  .cbox .num { font-family: 'Almarai', sans-serif; font-weight: 800; font-size: 1.8rem; color: var(--ember-soft); display: block; }
+  .cbox .lbl { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* Section headers */
+  section { text-align: center; }
+  .kicker { color: var(--ember); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.6rem; }
+  h2.title { font-size: clamp(1.8rem, 4vw, 2.6rem); margin: 0 0 2rem; }
+  .hero-inner { text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+  /* Meta items — hover/tap ignites hard */
+  .hero-meta { justify-content: center; }
+  .meta-item { position: relative; padding: 0.5rem 0.9rem; border-radius: 12px; }
+  .meta-item:hover, .meta-item.ignite {
+    animation: ignite 0.45s ease-in-out infinite alternate;
+  }
+  .meta-item:hover strong, .meta-item.ignite strong { color: inherit; }
+  @keyframes ignite {
+    0%   { color: #ffe45c; background: rgba(255,214,10,0.16); box-shadow: 0 0 22px 4px rgba(255,214,10,0.45); }
+    40%  { color: #ff8c1a; background: rgba(255,140,26,0.2); box-shadow: 0 0 28px 7px rgba(255,140,26,0.55); }
+    70%  { color: #ff3b1a; background: rgba(255,59,26,0.22); box-shadow: 0 0 30px 8px rgba(255,59,26,0.55); }
+    100% { color: #ffb703; background: rgba(255,183,3,0.2); box-shadow: 0 0 24px 5px rgba(255,183,3,0.5); }
+  }
+  .meta-flame {
+    position: absolute; top: -22px; left: 50%; transform: translateX(-50%) scale(0);
+    font-size: 1.8rem; opacity: 0; pointer-events: none;
+  }
+  .meta-item:hover .meta-flame, .meta-item.ignite .meta-flame {
+    animation: flicker 0.35s ease-in-out infinite alternate;
+  }
+  @keyframes flicker {
+    0%   { transform: translateX(-50%) scale(0.85) rotate(-8deg); opacity: 0.85; filter: drop-shadow(0 0 8px #ffd60a); }
+    35%  { transform: translateX(-50%) scale(1.35) rotate(7deg); opacity: 1; filter: drop-shadow(0 0 16px #ff8c1a); }
+    70%  { transform: translateX(-50%) scale(1.1) rotate(-6deg); opacity: 1; filter: drop-shadow(0 0 14px #ff3b1a); }
+    100% { transform: translateX(-50%) scale(1.4) rotate(8deg); opacity: 1; filter: drop-shadow(0 0 18px #ffb703); }
+  }
+
+  /* Date & location */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } }
+  .info-card { border-top: 2px solid var(--ember); padding-top: 1.1rem; }
+  .info-card h3 { font-size: 1.2rem; margin: 0 0 0.4rem; }
+  .info-card p { color: var(--muted); margin: 0; }
+
+  /* Program — staggered spark cards */
+  .program-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+  @media (max-width: 760px) { .program-grid { grid-template-columns: 1fr; } }
+  .p-card { background: var(--bg-2); border-radius: 16px; padding: 1.8rem 1.5rem; position: relative; overflow: hidden; }
+  .p-card:nth-child(2) { transform: translateY(1.4rem); }
+  @media (max-width: 760px) { .p-card:nth-child(2) { transform: none; } }
+  .p-card::after { content: ''; position: absolute; top: -30%; left: -20%; width: 140%; height: 140%; background: radial-gradient(circle at 30% 20%, rgba(255,106,26,0.15), transparent 60%); pointer-events: none; }
+  .p-time { color: var(--ember-soft); font-weight: 700; font-size: 0.9rem; }
+  .p-title { font-family: 'Almarai', sans-serif; font-weight: 700; font-size: 1.2rem; margin: 0.5rem 0 0.5rem; }
+  .p-desc { color: var(--muted); margin: 0; position: relative; z-index: 1; }
+
+  /* Contact */
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1.6rem; }
+  .contact-card { border: 1px solid var(--line); border-radius: 12px; padding: 1.4rem; }
+  .contact-card .role { color: var(--ember-soft); font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .contact-card .name { font-family: 'Almarai', sans-serif; font-weight: 700; font-size: 1.1rem; margin: 0 0 0.3rem; }
+  .contact-card .num { color: var(--muted); direction: ltr; display: inline-block; }
+
+  footer { text-align: center; padding: 3rem 6vw calc(3rem + env(safe-area-inset-bottom, 0px)); color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--line); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  #click-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
+
+  /* Admin / check-in */
+  #admin { display: none; text-align: right; }
+  #admin.visible { display: block; }
+  .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; text-align: right; }
+  @media (max-width: 760px) { .admin-grid { grid-template-columns: 1fr; } }
+  .admin-box { background: var(--bg-2); border-radius: 16px; padding: 1.5rem; }
+  .admin-box h3 { margin-top: 0; font-size: 1.1rem; }
+  .stat-row { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; justify-content: center; }
+  .stat { background: rgba(255,106,26,0.08); border-radius: 10px; padding: 0.8rem 1.4rem; text-align: center; }
+  .stat .n { font-family: 'Almarai', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--ember-soft); display: block; }
+  .stat .l { font-size: 0.8rem; color: var(--muted); }
+  .add-form { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .add-form input { flex: 1; min-width: 110px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem 0.8rem; color: var(--text); font-family: 'Tajawal', sans-serif; }
+  .add-form button, .scan-btn { background: linear-gradient(100deg, var(--ember), var(--ember-soft)); border: none; color: #16110a; font-weight: 700; font-family: 'Almarai', sans-serif; padding: 0.6rem 1.3rem; border-radius: 8px; cursor: pointer; }
+  .att-list { max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
+  .att-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); border-radius: 8px; padding: 0.5rem 0.8rem; font-size: 0.9rem; }
+  .badge { font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 999px; }
+  .badge.in { background: rgba(120,255,140,0.15); color: #7CFF8C; }
+  .badge.out { background: rgba(255,255,255,0.08); color: var(--muted); }
+  .qr-box { text-align: center; margin-top: 1rem; }
+  .qr-box canvas { background: #fff; padding: 8px; border-radius: 8px; }
+  #scan-video { width: 100%; max-width: 320px; border-radius: 12px; margin: 0.8rem auto 0; display: block; }
+  #scan-result { margin-top: 0.8rem; font-weight: 700; min-height: 1.4em; }
+
+  /* Chat widget */
+  #chat-widget { position: fixed; bottom: 20px; left: 20px; z-index: 500; }
+  #chat-toggle { width: 56px; height: 56px; border-radius: 50%; border: none; background: linear-gradient(100deg, var(--ember), var(--ember-soft)); font-size: 1.4rem; cursor: pointer; box-shadow: 0 6px 20px rgba(255,106,26,0.4); }
+  #chat-panel { position: fixed; bottom: 88px; left: 20px; width: min(320px, 90vw); max-height: 60vh; background: var(--bg-2); border: 1px solid var(--line); border-radius: 16px; display: none; flex-direction: column; overflow: hidden; }
+  #chat-panel.open { display: flex; }
+  #chat-log { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.9rem; text-align: right; }
+  .msg { padding: 0.5rem 0.8rem; border-radius: 10px; max-width: 85%; }
+  .msg.user { align-self: flex-end; background: rgba(255,106,26,0.18); }
+  .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.06); }
+  #chat-form { display: flex; border-top: 1px solid var(--line); }
+  #chat-input { flex: 1; border: none; background: transparent; color: var(--text); padding: 0.8rem; font-family: 'Tajawal', sans-serif; }
+  #chat-form button { border: none; background: none; color: var(--ember-soft); font-weight: 700; padding: 0 1rem; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<section id="hero">
+  <canvas id="spark-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="eyebrow">حفلة الكشافة السنوية</div>
+    <h1 class="brand">Spark</h1>
+    <p class="tagline">شرارة بتولد حدث. تجمّعنا الكشفي الأهم في السنة دي — وكل اللي محتاج تعرفه موجود هنا.</p>
+    <div class="hero-meta">
+      <div class="meta-item"><span class="meta-flame">🔥</span><strong>السبت</strong> 3 أكتوبر 2026</div>
+      <div class="meta-item"><span class="meta-flame">🔥</span><strong>الساعة</strong> 6 مساءً</div>
+      <div class="meta-item"><span class="meta-flame">🔥</span><strong>المكان</strong> مسرح الأنبا رويس، الكاتدرائية، العباسية</div>
+    </div>
+    <div id="countdown">
+      <div class="cbox"><span class="num" id="cd-days">--</span><span class="lbl">يوم</span></div>
+      <div class="cbox"><span class="num" id="cd-hours">--</span><span class="lbl">ساعة</span></div>
+      <div class="cbox"><span class="num" id="cd-mins">--</span><span class="lbl">دقيقة</span></div>
+      <div class="cbox"><span class="num" id="cd-secs">--</span><span class="lbl">ثانية</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="details">
+  <div class="kicker">التفاصيل</div>
+  <h2 class="title">التاريخ والمكان</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>الميعاد</h3>
+      <p>السبت الموافق 3 أكتوبر 2026، الساعة 6 مساءً.</p>
+    </div>
+    <div class="info-card">
+      <h3>المكان</h3>
+      <p>مسرح الأنبا رويس، الكاتدرائية المرقسية، العباسية — القاهرة.</p>
+    </div>
+  </div>
+</section>
+
+<section id="program">
+  <div class="kicker">البرنامج</div>
+  <h2 class="title">جدول اليوم</h2>
+  <div class="program-grid">
+    <div class="p-card">
+      <div class="p-time">5:30 مساءً</div>
+      <p class="p-title">الاستقبال</p>
+      <p class="p-desc">تسجيل الحضور وتوزيع الفرق على الأماكن.</p>
+    </div>
+    <div class="p-card">
+      <div class="p-time">6:00 مساءً</div>
+      <p class="p-title">فقرات الحفلة</p>
+      <p class="p-desc">عروض ومسابقات وفقرات كشفية متنوعة على المسرح.</p>
+    </div>
+    <div class="p-card">
+      <div class="p-time">8:30 مساءً</div>
+      <p class="p-title">الختام والتكريم</p>
+      <p class="p-desc">تكريم الفرق المشاركة وكلمة ختامية.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="kicker">تواصل معانا</div>
+  <h2 class="title">المسؤولين عن الحفلة</h2>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="role">مسؤول التنظيم</div>
+      <p class="name">هيتم تحديد الاسم</p>
+      <span class="num">01000000000</span>
+    </div>
+    <div class="contact-card">
+      <div class="role">مسؤولة التسجيل</div>
+      <p class="name">هيتم تحديد الاسم</p>
+      <span class="num">01000000000</span>
+    </div>
+    <div class="contact-card">
+      <div class="role">للاستفسارات العامة</div>
+      <p class="name">هيتم تحديد الاسم</p>
+      <span class="num">01000000000</span>
+    </div>
+  </div>
+</section>
+
+<section id="admin">
+  <div class="kicker">لوحة التحكم</div>
+  <h2 class="title">إدارة الحضور</h2>
+  <div class="stat-row">
+    <div class="stat"><span class="n" id="stat-total">0</span><span class="l">إجمالي المسجلين</span></div>
+    <div class="stat"><span class="n" id="stat-in">0</span><span class="l">دخلوا</span></div>
+  </div>
+  <div class="admin-grid">
+    <div class="admin-box">
+      <h3>إضافة مشارك</h3>
+      <form id="add-form" class="add-form">
+        <input id="add-name" placeholder="الاسم" required>
+        <input id="add-team" placeholder="الفريق (اختياري)">
+        <button type="submit">إضافة</button>
+      </form>
+      <div id="new-qr" class="qr-box"></div>
+      <div class="att-list" id="att-list"></div>
+    </div>
+    <div class="admin-box">
+      <h3>ماسح الحضور</h3>
+      <button id="scan-toggle" class="scan-btn" type="button">فتح الكاميرا</button>
+      <video id="scan-video" playsinline muted hidden></video>
+      <canvas id="scan-canvas" hidden></canvas>
+      <div id="scan-result"></div>
+    </div>
+  </div>
+</section>
+
+<footer>Spark © 2026 — حفلة الكشافة السنوية</footer>
+
+<div id="chat-widget">
+  <button id="chat-toggle" aria-label="اسأل عن الحفلة" type="button">💬</button>
+  <div id="chat-panel">
+    <div id="chat-log"></div>
+    <form id="chat-form">
+      <input id="chat-input" placeholder="اسأل عن الحفلة..." autocomplete="off">
+      <button type="submit">إرسال</button>
+    </form>
+  </div>
+</div>
+
+<canvas id="click-canvas"></canvas>
+
+<script>
+(function(){
+  // Countdown
+  var target = new Date('2026-10-03T18:00:00');
+  function tick(){
+    var now = new Date();
+    var diff = target - now;
+    if (diff < 0) diff = 0;
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor((diff % 86400000) / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    var pad = function(n){ return n.toString().padStart(2,'0'); };
+    var elD = document.getElementById('cd-days');
+    var elH = document.getElementById('cd-hours');
+    var elM = document.getElementById('cd-mins');
+    var elS = document.getElementById('cd-secs');
+    if (elD) elD.textContent = d;
+    if (elH) elH.textContent = pad(h);
+    if (elM) elM.textContent = pad(m);
+    if (elS) elS.textContent = pad(s);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // Ember particle field
+  var canvas = document.getElementById('spark-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var w, h, particles = [];
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function makeParticle(){
+    return {
+      x: Math.random() * w,
+      y: h + Math.random() * 40,
+      r: 1 + Math.random() * 2.2,
+      speed: 0.3 + Math.random() * 0.9,
+      drift: (Math.random() - 0.5) * 0.4,
+      alpha: 0.15 + Math.random() * 0.5,
+      hue: Math.random() > 0.5 ? '255,106,26' : '255,183,77'
+    };
+  }
+  var count = Math.min(70, Math.floor(w / 14));
+  for (var i = 0; i < count; i++) particles.push(makeParticle());
+
+  function draw(){
+    ctx.clearRect(0, 0, w, h);
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.y -= p.speed;
+      p.x += p.drift;
+      if (p.y < -10) { particles[i] = makeParticle(); particles[i].y = h + 10; continue; }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + p.hue + ',' + p.alpha + ')';
+      ctx.fill();
+    }
+    if (!reduceMotion) requestAnimationFrame(draw);
+  }
+  draw();
+
+  // Click / tap spark burst, anywhere on the page
+  var cc = document.getElementById('click-canvas');
+  if (cc) {
+    var cctx = cc.getContext('2d');
+    var burstParticles = [];
+    var running = false;
+
+    function resizeClick(){
+      cc.width = window.innerWidth;
+      cc.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeClick);
+    resizeClick();
+
+    function spawnBurst(x, y){
+      var n = reduceMotion ? 5 : 14;
+      for (var i = 0; i < n; i++) {
+        var angle = Math.random() * Math.PI * 2;
+        var speed = 1.5 + Math.random() * 3.5;
+        burstParticles.push({
+          x: x, y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1,
+          life: 1,
+          decay: 0.02 + Math.random() * 0.02,
+          r: 1.5 + Math.random() * 2,
+          hue: Math.random() > 0.5 ? '255,106,26' : '255,183,77'
+        });
+      }
+      if (!running) { running = true; requestAnimationFrame(drawBurst); }
+    }
+
+    function drawBurst(){
+      cctx.clearRect(0, 0, cc.width, cc.height);
+      for (var i = burstParticles.length - 1; i >= 0; i--) {
+        var p = burstParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.08;
+        p.life -= p.decay;
+        if (p.life <= 0) { burstParticles.splice(i, 1); continue; }
+        cctx.beginPath();
+        cctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+        cctx.fillStyle = 'rgba(' + p.hue + ',' + p.life + ')';
+        cctx.fill();
+      }
+      if (burstParticles.length > 0) {
+        requestAnimationFrame(drawBurst);
+      } else {
+        running = false;
+        cctx.clearRect(0, 0, cc.width, cc.height);
+      }
+    }
+
+    document.addEventListener('click', function(e){
+      spawnBurst(e.clientX, e.clientY);
+    });
+
+    // Ignite the date/time/location items on hover (desktop) or tap (mobile)
+    document.querySelectorAll('.meta-item').forEach(function(el){
+      var igniteInterval = null;
+      function centerOf(){
+        var r = el.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top };
+      }
+      function startIgnite(){
+        var c = centerOf();
+        spawnBurst(c.x, c.y);
+        if (igniteInterval) clearInterval(igniteInterval);
+        igniteInterval = setInterval(function(){
+          var c2 = centerOf();
+          spawnBurst(c2.x, c2.y);
+        }, 180);
+      }
+      function stopIgnite(){
+        if (igniteInterval) { clearInterval(igniteInterval); igniteInterval = null; }
+      }
+      el.addEventListener('mouseenter', startIgnite);
+      el.addEventListener('mouseleave', stopIgnite);
+      el.addEventListener('touchstart', function(){
+        el.classList.add('ignite');
+        startIgnite();
+        setTimeout(function(){ el.classList.remove('ignite'); stopIgnite(); }, 1000);
+      }, { passive: true });
+    });
+  }
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+<script>
+(async function(){
+  if (!window.claude || !window.claude.use) return;
+
+  // ---- Chat bot ----
+  (async function(){
+    var sample = await window.claude.use('sample');
+    var widget = document.getElementById('chat-widget');
+    if (!sample) { if (widget) widget.style.display = 'none'; return; }
+    var toggle = document.getElementById('chat-toggle');
+    var panel = document.getElementById('chat-panel');
+    var log = document.getElementById('chat-log');
+    var form = document.getElementById('chat-form');
+    var input = document.getElementById('chat-input');
+    var turns = [];
+    var RULES = 'انت بوت مساعد لحفلة كشفية اسمها Spark. جاوب باختصار ووضوح بالعربي على أي سؤال عن الحفلة بناءً على المعلومات دي بس:\n' +
+      '- التاريخ: السبت 3 أكتوبر 2026\n' +
+      '- الساعة: 6 مساءً (الاستقبال من 5:30 مساءً)\n' +
+      '- المكان: مسرح الأنبا رويس، الكاتدرائية المرقسية، العباسية، القاهرة\n' +
+      '- البرنامج: 5:30 استقبال، 6:00 فقرات الحفلة، 8:30 الختام والتكريم\n' +
+      'لو السؤال مش عن الحفلة أو معلومة مش موجودة عندك، قول إنك مش متأكد وانصح بالتواصل مع المسؤولين.';
+    toggle.addEventListener('click', function(){ panel.classList.toggle('open'); });
+    function addMsg(role, text){
+      var d = document.createElement('div');
+      d.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+      d.textContent = text;
+      log.appendChild(d);
+      log.scrollTop = log.scrollHeight;
+      return d;
+    }
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      var q = input.value.trim();
+      if (!q) return;
+      input.value = '';
+      addMsg('user', q);
+      turns.push({ role: 'user', content: q });
+      var botEl = addMsg('bot', 'بيفكر...');
+      try {
+        var res = await sample([{ role: 'user', content: RULES }].concat(turns), {
+          cache: false,
+          onText: function(o){ botEl.textContent = o.text; log.scrollTop = log.scrollHeight; }
+        });
+        botEl.textContent = res.text;
+        turns.push({ role: 'assistant', content: res.text });
+      } catch (err) {
+        botEl.textContent = 'معلش، مقدرتش أجاوب دلوقتي.';
+      }
+    });
+  })();
+
+  // ---- Attendance / QR check-in ----
+  var user = await window.claude.use('user');
+  var db = await window.claude.use('db');
+  var adminSection = document.getElementById('admin');
+  if (!user || !db || !adminSection) return;
+  var canWrite = false;
+  try {
+    var canData = await user.can('data.write');
+    var canEditRes = await user.canEdit();
+    canWrite = canData === true || canEditRes === true;
+  } catch (e) {}
+  if (!canWrite) return;
+  adminSection.classList.add('visible');
+
+  var attendees = db.collection('attendees');
+
+  function renderQR(container, id, name){
+    container.innerHTML = '';
+    new QRCode(container, { text: 'SPARK:' + id, width: 140, height: 140 });
+    var canvasEl = container.querySelector('canvas');
+    if (canvasEl) {
+      var dl = document.createElement('a');
+      dl.href = canvasEl.toDataURL('image/png');
+      dl.download = (name || 'qr') + '.png';
+      dl.textContent = 'تحميل QR';
+      dl.style.display = 'block';
+      dl.style.marginTop = '0.6rem';
+      dl.style.color = 'var(--ember-soft)';
+      container.appendChild(dl);
+    }
+  }
+
+  var addForm = document.getElementById('add-form');
+  addForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var nameInput = document.getElementById('add-name');
+    var teamInput = document.getElementById('add-team');
+    var name = nameInput.value.trim();
+    var team = teamInput.value.trim();
+    if (!name) return;
+    var ref = await attendees.add({ name: name, team: team, checkedIn: false, createdAt: Date.now() });
+    nameInput.value = '';
+    teamInput.value = '';
+    var box = document.getElementById('new-qr');
+    box.innerHTML = '<p style="color:var(--muted); font-size:0.85rem;">QR الخاص بـ ' + name + '</p><div id="qr-render"></div>';
+    renderQR(document.getElementById('qr-render'), ref.id, name);
+  });
+
+  var listEl = document.getElementById('att-list');
+  var totalEl = document.getElementById('stat-total');
+  var inEl = document.getElementById('stat-in');
+  attendees.onSnapshot(function(snap){
+    listEl.innerHTML = '';
+    var checkedIn = 0;
+    snap.docs.forEach(function(doc){
+      var d = doc.data() || {};
+      if (d.checkedIn) checkedIn++;
+      var row = document.createElement('div');
+      row.className = 'att-row';
+      var badge = d.checkedIn ? '<span class="badge in">داخل</span>' : '<span class="badge out">لسه</span>';
+      var label = document.createElement('span');
+      label.textContent = (d.name || '') + (d.team ? ' — ' + d.team : '');
+      row.appendChild(label);
+      row.insertAdjacentHTML('beforeend', badge);
+      listEl.appendChild(row);
+    });
+    totalEl.textContent = snap.docs.length;
+    inEl.textContent = checkedIn;
+  }, function(){});
+
+  // Scanner
+  var scanToggle = document.getElementById('scan-toggle');
+  var video = document.getElementById('scan-video');
+  var scanCanvas = document.getElementById('scan-canvas');
+  var resultEl = document.getElementById('scan-result');
+  var stream = null;
+  var scanning = false;
+
+  function stopScan(){
+    scanning = false;
+    if (stream) { stream.getTracks().forEach(function(t){ t.stop(); }); stream = null; }
+    video.hidden = true;
+    scanToggle.textContent = 'فتح الكاميرا';
+  }
+
+  function scanLoop(){
+    if (!scanning) return;
+    var ctx = scanCanvas.getContext('2d');
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      scanCanvas.width = video.videoWidth;
+      scanCanvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, scanCanvas.width, scanCanvas.height);
+      var img = ctx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
+      var code = window.jsQR ? jsQR(img.data, img.width, img.height) : null;
+      if (code && code.data && code.data.indexOf('SPARK:') === 0) {
+        handleScan(code.data.slice(6));
+        return;
+      }
+    }
+    requestAnimationFrame(scanLoop);
+  }
+
+  async function handleScan(id){
+    scanning = false;
+    try {
+      var doc = await attendees.doc(id).get();
+      if (!doc.exists) {
+        resultEl.textContent = 'كود غير معروف';
+        resultEl.style.color = '#ff5c5c';
+      } else {
+        var d = doc.data();
+        if (d.checkedIn) {
+          resultEl.textContent = d.name + ' — دخل قبل كده';
+          resultEl.style.color = '#ffb703';
+        } else {
+          await attendees.doc(id).update({ checkedIn: true, checkedInAt: Date.now() });
+          resultEl.textContent = 'تم تسجيل دخول: ' + d.name;
+          resultEl.style.color = '#7CFF8C';
+        }
+      }
+    } catch (e) {
+      resultEl.textContent = 'حصل خطأ، حاول تاني';
+      resultEl.style.color = '#ff5c5c';
+    }
+    setTimeout(function(){
+      if (stream) { scanning = true; requestAnimationFrame(scanLoop); }
+    }, 1800);
+  }
+
+  scanToggle.addEventListener('click', async function(){
+    if (stream) { stopScan(); return; }
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = stream;
+      video.hidden = false;
+      await video.play();
+      scanToggle.textContent = 'إيقاف الكاميرا';
+      scanning = true;
+      requestAnimationFrame(scanLoop);
+    } catch (e) {
+      resultEl.textContent = 'مقدرش أفتح الكاميرا';
+    }
+  });
+})();
+</script>
+</body>
+</html>
